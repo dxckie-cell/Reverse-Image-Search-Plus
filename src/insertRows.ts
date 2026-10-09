@@ -28,22 +28,23 @@ function findArray(root: any, test: (arr: any[]) => boolean, maxDepth = 40): any
 }
 
 /**
- * Inserts `rows` into the action sheet tree. Prefers the spot right above "Reply" so the button is on
- * screen the moment the sheet opens, then falls back to next to the image actions, then to any group of
- * rows. Returns whether anything was inserted.
+ * Inserts `rows` into the action sheet tree. Prefers the spot right below "Save Image", then next to
+ * "Copy Media Link", then above "Reply", then any group of rows. Returns whether anything was inserted.
  */
 export function insertRows(tree: any, rows: any[]): boolean {
     if (!rows.length) return false;
 
-    const strategies: ((arr: any[]) => number)[] = [
-        (arr) => arr.findIndex((el) => labelOf(el) === "reply"),
-        (arr) => arr.findIndex((el) => /(save|copy).*(image|media)|image.*link/.test(labelOf(el))),
+    // [find index, offset]: offset 1 inserts right after the match, 0 right before it.
+    const strategies: [(arr: any[]) => number, number][] = [
+        [(arr) => arr.findIndex((el) => /save.*(image|media)/.test(labelOf(el))), 1],
+        [(arr) => arr.findIndex((el) => /copy.*(image|media).*link|image.*link/.test(labelOf(el))), 0],
+        [(arr) => arr.findIndex((el) => labelOf(el) === "reply"), 0],
     ];
 
-    for (const find of strategies) {
+    for (const [find, offset] of strategies) {
         const list = findArray(tree, (arr) => arr.some(isRowLike) && find(arr) !== -1);
         if (list) {
-            list.splice(find(list), 0, ...rows);
+            list.splice(find(list) + offset, 0, ...rows);
             return true;
         }
     }
