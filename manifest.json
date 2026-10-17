@@ -1,9 +1,13 @@
 {
     "name": "Reverse Image Search+",
-    "description": "Long-press any image and tap Reverse Image Search - opens Google Lens, Yandex, TinEye or Bing instantly. Also keeps the /reverse-image-search command.",
+    "description": "Long-press an image and tap Reverse Image Search to open it in Google Lens.",
     "authors": [
-        { "name": "dxckie-cell" },
-        { "name": "Rosie" }
+        {
+            "name": "dxckie-cell"
+        },
+        {
+            "name": "Rosie"
+        }
     ],
-    "main": "src/index.tsx"
+    "main": "src/index.ts"
 }
